@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { ChevronDown, Search, Server, Globe, Shield, Zap, Users, Star, Menu, X, Check, ArrowRight, Gamepad2, Crown, Gem } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { ChevronDown, Search, Server, Globe, Shield, Zap, Users, Star, Menu, X, Check, ArrowRight, Gamepad2, Crown, Gem, Play, Sparkles, TrendingUp } from 'lucide-react';
 import PaymentForm from './components/PaymentForm';
 import DomainOrderForm from './components/DomainOrderForm';
 
@@ -12,6 +12,12 @@ const App = () => {
   const [scrollY, setScrollY] = useState(0);
   const [domainSearch, setDomainSearch] = useState('');
   const [selectedTld, setSelectedTld] = useState('.com');
+  const [selectedPlanType, setSelectedPlanType] = useState('budget');
+
+  // Refs for smooth scrolling
+  const budgetRef = useRef<HTMLDivElement>(null);
+  const poweredRef = useRef<HTMLDivElement>(null);
+  const premiumRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
@@ -170,6 +176,24 @@ const App = () => {
     setCurrentPage('checkout');
   };
 
+  const scrollToPlanSection = (planType: string) => {
+    setSelectedPlanType(planType);
+    
+    const refs = {
+      budget: budgetRef,
+      powered: poweredRef,
+      premium: premiumRef
+    };
+
+    const targetRef = refs[planType as keyof typeof refs];
+    if (targetRef?.current) {
+      targetRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+  };
+
   if (currentPage === 'checkout' && selectedPlan) {
     return (
       <PaymentForm
@@ -185,7 +209,7 @@ const App = () => {
     return (
       <DomainOrderForm
         selectedDomain={selectedDomain}
-        onBack={() => setCurrentPage('home')}
+        onBack={() => setCurrentPage('domains')}
         theme="dark"
       />
     );
@@ -211,6 +235,14 @@ const App = () => {
                 onClick={() => setCurrentPage('home')}
                 className={`text-sm font-medium transition-colors ${
                   currentPage === 'home' ? 'text-purple-400' : 'text-gray-300 hover:text-white'
+                }`}
+              >
+                Home
+              </button>
+              <button
+                onClick={() => setCurrentPage('domains')}
+                className={`text-sm font-medium transition-colors ${
+                  currentPage === 'domains' ? 'text-purple-400' : 'text-gray-300 hover:text-white'
                 }`}
               >
                 Domains
@@ -253,6 +285,15 @@ const App = () => {
                 }}
                 className="block px-3 py-2 text-base font-medium text-gray-300 hover:text-white"
               >
+                Home
+              </button>
+              <button
+                onClick={() => {
+                  setCurrentPage('domains');
+                  setIsMenuOpen(false);
+                }}
+                className="block px-3 py-2 text-base font-medium text-gray-300 hover:text-white"
+              >
                 Domains
               </button>
               <button
@@ -278,8 +319,191 @@ const App = () => {
         )}
       </nav>
 
-      {/* Home Page - Domain Platform */}
+      {/* Premium Home Page */}
       {currentPage === 'home' && (
+        <>
+          {/* Hero Section */}
+          <section className="pt-24 pb-16 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+            {/* Animated Background Elements */}
+            <div className="absolute inset-0 overflow-hidden">
+              <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500/20 rounded-full blur-3xl animate-pulse"></div>
+              <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-pink-500/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
+              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse delay-500"></div>
+            </div>
+
+            <div className="max-w-7xl mx-auto text-center relative z-10">
+              <div className="animate-fade-in-up">
+                <div className="inline-flex items-center space-x-2 bg-white/10 backdrop-blur-md rounded-full px-6 py-3 mb-8 border border-white/20">
+                  <Sparkles className="w-5 h-5 text-yellow-400" />
+                  <span className="text-white font-medium">Premium Services for Indian Gamers</span>
+                  <TrendingUp className="w-5 h-5 text-green-400" />
+                </div>
+
+                <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
+                  Power Your
+                  <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent"> Digital Dreams</span>
+                </h1>
+                <p className="text-xl md:text-2xl text-gray-300 mb-12 max-w-4xl mx-auto leading-relaxed">
+                  Premium domain registration and blazing-fast Minecraft hosting designed specifically for Indian gamers. 
+                  Choose your path to digital excellence.
+                </p>
+              </div>
+
+              {/* Service Selection Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-16">
+                {/* Domain Service Card */}
+                <div 
+                  onClick={() => setCurrentPage('domains')}
+                  className="group relative bg-white/10 backdrop-blur-md rounded-3xl p-8 border border-white/20 hover:border-purple-500/50 transition-all duration-500 transform hover:scale-105 hover:-translate-y-2 cursor-pointer overflow-hidden"
+                >
+                  {/* Card Background Animation */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-pink-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                  
+                  <div className="relative z-10">
+                    <div className="w-20 h-20 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                      <Globe className="w-10 h-10 text-white" />
+                    </div>
+                    <h3 className="text-3xl font-bold text-white mb-4">Domain Registration</h3>
+                    <p className="text-gray-300 mb-6 leading-relaxed">
+                      Secure your perfect domain with instant activation, premium extensions, and competitive pricing starting from ₹299.
+                    </p>
+                    
+                    <div className="space-y-3 mb-8">
+                      <div className="flex items-center text-gray-300">
+                        <Check className="w-5 h-5 text-green-400 mr-3" />
+                        <span>Instant Domain Activation</span>
+                      </div>
+                      <div className="flex items-center text-gray-300">
+                        <Check className="w-5 h-5 text-green-400 mr-3" />
+                        <span>Free DNS Management</span>
+                      </div>
+                      <div className="flex items-center text-gray-300">
+                        <Check className="w-5 h-5 text-green-400 mr-3" />
+                        <span>Domain Privacy Protection</span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-center text-purple-400 group-hover:text-white transition-colors">
+                      <span className="font-semibold mr-2">Get Started</span>
+                      <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Hosting Service Card */}
+                <div 
+                  onClick={() => setCurrentPage('hosting')}
+                  className="group relative bg-white/10 backdrop-blur-md rounded-3xl p-8 border border-white/20 hover:border-blue-500/50 transition-all duration-500 transform hover:scale-105 hover:-translate-y-2 cursor-pointer overflow-hidden"
+                >
+                  {/* Card Background Animation */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-cyan-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                  
+                  <div className="relative z-10">
+                    <div className="w-20 h-20 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                      <Server className="w-10 h-10 text-white" />
+                    </div>
+                    <h3 className="text-3xl font-bold text-white mb-4">Minecraft Hosting</h3>
+                    <p className="text-gray-300 mb-6 leading-relaxed">
+                      High-performance Minecraft servers with Indian locations, 99.9% uptime, and plans starting from just ₹49/month.
+                    </p>
+                    
+                    <div className="space-y-3 mb-8">
+                      <div className="flex items-center text-gray-300">
+                        <Check className="w-5 h-5 text-green-400 mr-3" />
+                        <span>Indian Server Locations</span>
+                      </div>
+                      <div className="flex items-center text-gray-300">
+                        <Check className="w-5 h-5 text-green-400 mr-3" />
+                        <span>99.9% Uptime Guarantee</span>
+                      </div>
+                      <div className="flex items-center text-gray-300">
+                        <Check className="w-5 h-5 text-green-400 mr-3" />
+                        <span>24/7 Premium Support</span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-center text-blue-400 group-hover:text-white transition-colors">
+                      <span className="font-semibold mr-2">Choose Plan</span>
+                      <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Stats Section */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-16">
+                <div className="text-center">
+                  <div className="text-4xl font-bold text-white mb-2">10K+</div>
+                  <div className="text-gray-400">Happy Customers</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-4xl font-bold text-white mb-2">99.9%</div>
+                  <div className="text-gray-400">Uptime</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-4xl font-bold text-white mb-2">24/7</div>
+                  <div className="text-gray-400">Support</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-4xl font-bold text-white mb-2">5★</div>
+                  <div className="text-gray-400">Rating</div>
+                </div>
+              </div>
+
+              {/* CTA Section */}
+              <div className="bg-white/5 backdrop-blur-md rounded-3xl p-8 border border-white/20">
+                <h2 className="text-3xl font-bold text-white mb-4">Ready to Get Started?</h2>
+                <p className="text-gray-300 mb-6">Join thousands of satisfied customers who trust CraftDomains for their digital needs.</p>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <button 
+                    onClick={() => setCurrentPage('domains')}
+                    className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-8 py-4 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105"
+                  >
+                    Register Domain
+                  </button>
+                  <button 
+                    onClick={() => setCurrentPage('hosting')}
+                    className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white px-8 py-4 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105"
+                  >
+                    Start Hosting
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Testimonials */}
+          <section className="py-16 px-4 sm:px-6 lg:px-8">
+            <div className="max-w-7xl mx-auto">
+              <h2 className="text-4xl font-bold text-white text-center mb-12">
+                What Our Customers Say
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {testimonials.map((testimonial, index) => (
+                  <div
+                    key={index}
+                    className="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20 hover:border-purple-500/50 transition-all duration-300 transform hover:scale-105"
+                  >
+                    <div className="flex items-center mb-4">
+                      {[...Array(testimonial.rating)].map((_, i) => (
+                        <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
+                      ))}
+                    </div>
+                    <p className="text-gray-300 mb-4">"{testimonial.content}"</p>
+                    <div>
+                      <div className="font-semibold text-white">{testimonial.name}</div>
+                      <div className="text-sm text-gray-400">{testimonial.role}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        </>
+      )}
+
+      {/* Domains Page */}
+      {currentPage === 'domains' && (
         <>
           {/* Hero Section */}
           <section className="pt-24 pb-16 px-4 sm:px-6 lg:px-8">
@@ -383,34 +607,6 @@ const App = () => {
               </div>
             </div>
           </section>
-
-          {/* Testimonials */}
-          <section className="py-16 px-4 sm:px-6 lg:px-8">
-            <div className="max-w-7xl mx-auto">
-              <h2 className="text-3xl font-bold text-white text-center mb-12">
-                What Our Customers Say
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                {testimonials.map((testimonial, index) => (
-                  <div
-                    key={index}
-                    className="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20 hover:border-purple-500/50 transition-all duration-300"
-                  >
-                    <div className="flex items-center mb-4">
-                      {[...Array(testimonial.rating)].map((_, i) => (
-                        <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
-                      ))}
-                    </div>
-                    <p className="text-gray-300 mb-4">"{testimonial.content}"</p>
-                    <div>
-                      <div className="font-semibold text-white">{testimonial.name}</div>
-                      <div className="text-sm text-gray-400">{testimonial.role}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
         </>
       )}
 
@@ -428,179 +624,215 @@ const App = () => {
               </p>
             </div>
 
-            {/* Plan Tabs */}
-            <div className="mb-12">
+            {/* Plan Type Selector */}
+            <div className="mb-16">
               <div className="flex justify-center">
-                <div className="bg-white/10 backdrop-blur-md rounded-xl p-2 border border-white/20">
-                  <div className="flex space-x-2">
-                    <div className="flex items-center space-x-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white px-6 py-3 rounded-lg">
+                <div className="bg-white/10 backdrop-blur-md rounded-2xl p-2 border border-white/20">
+                  <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
+                    <button
+                      onClick={() => scrollToPlanSection('budget')}
+                      className={`flex items-center space-x-2 px-6 py-4 rounded-xl font-semibold transition-all duration-300 ${
+                        selectedPlanType === 'budget'
+                          ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-lg'
+                          : 'text-gray-300 hover:text-white hover:bg-white/10'
+                      }`}
+                    >
                       <Gamepad2 className="w-5 h-5" />
-                      <span className="font-semibold">Budget Plans</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Budget Plans Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-16">
-              {budgetPlans.map((plan, index) => (
-                <div
-                  key={index}
-                  className="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20 hover:border-green-500/50 transition-all duration-300 transform hover:scale-105 cursor-pointer group"
-                  onClick={() => handlePlanSelect(plan)}
-                >
-                  <div className="text-center mb-6">
-                    <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl flex items-center justify-center mx-auto mb-4">
-                      <Gamepad2 className="w-8 h-8 text-white" />
-                    </div>
-                    <h3 className="text-2xl font-bold text-white mb-2">{plan.name}</h3>
-                    <div className="text-3xl font-bold text-green-400 mb-2">{plan.price}<span className="text-lg text-gray-400">/mo</span></div>
-                  </div>
-
-                  <div className="space-y-3 mb-6">
-                    <div className="flex items-center text-gray-300">
-                      <Check className="w-5 h-5 text-green-400 mr-3" />
-                      <span>{plan.ram}</span>
-                    </div>
-                    <div className="flex items-center text-gray-300">
-                      <Check className="w-5 h-5 text-green-400 mr-3" />
-                      <span>{plan.cpu}</span>
-                    </div>
-                    <div className="flex items-center text-gray-300">
-                      <Check className="w-5 h-5 text-green-400 mr-3" />
-                      <span>{plan.storage}</span>
-                    </div>
-                    <div className="flex items-center text-gray-300">
-                      <Check className="w-5 h-5 text-green-400 mr-3" />
-                      <span>{plan.location}</span>
-                    </div>
-                  </div>
-
-                  <button className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white py-3 rounded-lg font-semibold transition-all duration-300 group-hover:shadow-lg">
-                    Select Plan
-                  </button>
-                </div>
-              ))}
-            </div>
-
-            {/* Powered Plans */}
-            <div className="mb-12">
-              <div className="flex justify-center">
-                <div className="bg-white/10 backdrop-blur-md rounded-xl p-2 border border-white/20">
-                  <div className="flex space-x-2">
-                    <div className="flex items-center space-x-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-6 py-3 rounded-lg">
+                      <span>Budget Plans</span>
+                      <span className="text-sm opacity-75">From ₹49</span>
+                    </button>
+                    <button
+                      onClick={() => scrollToPlanSection('powered')}
+                      className={`flex items-center space-x-2 px-6 py-4 rounded-xl font-semibold transition-all duration-300 ${
+                        selectedPlanType === 'powered'
+                          ? 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-lg'
+                          : 'text-gray-300 hover:text-white hover:bg-white/10'
+                      }`}
+                    >
                       <Zap className="w-5 h-5" />
-                      <span className="font-semibold">Powered Plans</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-16">
-              {poweredPlans.map((plan, index) => (
-                <div
-                  key={index}
-                  className="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20 hover:border-blue-500/50 transition-all duration-300 transform hover:scale-105 cursor-pointer group"
-                  onClick={() => handlePlanSelect(plan)}
-                >
-                  <div className="text-center mb-6">
-                    <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center mx-auto mb-4">
-                      <Zap className="w-8 h-8 text-white" />
-                    </div>
-                    <h3 className="text-2xl font-bold text-white mb-2">{plan.name}</h3>
-                    <div className="text-3xl font-bold text-blue-400 mb-2">{plan.price}<span className="text-lg text-gray-400">/mo</span></div>
-                  </div>
-
-                  <div className="space-y-3 mb-6">
-                    <div className="flex items-center text-gray-300">
-                      <Check className="w-5 h-5 text-blue-400 mr-3" />
-                      <span>{plan.ram}</span>
-                    </div>
-                    <div className="flex items-center text-gray-300">
-                      <Check className="w-5 h-5 text-blue-400 mr-3" />
-                      <span>{plan.cpu}</span>
-                    </div>
-                    <div className="flex items-center text-gray-300">
-                      <Check className="w-5 h-5 text-blue-400 mr-3" />
-                      <span>{plan.storage}</span>
-                    </div>
-                    <div className="flex items-center text-gray-300">
-                      <Check className="w-5 h-5 text-blue-400 mr-3" />
-                      <span>{plan.location}</span>
-                    </div>
-                  </div>
-
-                  <button className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white py-3 rounded-lg font-semibold transition-all duration-300 group-hover:shadow-lg">
-                    Select Plan
-                  </button>
-                </div>
-              ))}
-            </div>
-
-            {/* Premium Plans */}
-            <div className="mb-12">
-              <div className="flex justify-center">
-                <div className="bg-white/10 backdrop-blur-md rounded-xl p-2 border border-white/20">
-                  <div className="flex space-x-2">
-                    <div className="flex items-center space-x-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-3 rounded-lg">
+                      <span>Powered Plans</span>
+                      <span className="text-sm opacity-75">From ₹90</span>
+                    </button>
+                    <button
+                      onClick={() => scrollToPlanSection('premium')}
+                      className={`flex items-center space-x-2 px-6 py-4 rounded-xl font-semibold transition-all duration-300 ${
+                        selectedPlanType === 'premium'
+                          ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg'
+                          : 'text-gray-300 hover:text-white hover:bg-white/10'
+                      }`}
+                    >
                       <Crown className="w-5 h-5" />
-                      <span className="font-semibold">Premium Plans</span>
-                    </div>
+                      <span>Premium Plans</span>
+                      <span className="text-sm opacity-75">From ₹149</span>
+                    </button>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {premiumPlans.map((plan, index) => (
-                <div
-                  key={index}
-                  className="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20 hover:border-purple-500/50 transition-all duration-300 transform hover:scale-105 cursor-pointer group relative"
-                  onClick={() => handlePlanSelect(plan)}
-                >
-                  {plan.name === 'Diamond' && (
-                    <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-yellow-500 to-orange-500 text-white text-xs px-3 py-1 rounded-full">
-                      ⭐ Popular
-                    </div>
-                  )}
-                  <div className="text-center mb-6">
-                    <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center mx-auto mb-4">
-                      <Crown className="w-8 h-8 text-white" />
-                    </div>
-                    <h3 className="text-2xl font-bold text-white mb-2">{plan.name}</h3>
-                    <div className="text-3xl font-bold text-purple-400 mb-2">{plan.price}<span className="text-lg text-gray-400">/mo</span></div>
-                  </div>
-
-                  <div className="space-y-3 mb-6">
-                    <div className="flex items-center text-gray-300">
-                      <Check className="w-5 h-5 text-purple-400 mr-3" />
-                      <span>{plan.ram}</span>
-                    </div>
-                    <div className="flex items-center text-gray-300">
-                      <Check className="w-5 h-5 text-purple-400 mr-3" />
-                      <span>{plan.cpu}</span>
-                    </div>
-                    <div className="flex items-center text-gray-300">
-                      <Check className="w-5 h-5 text-purple-400 mr-3" />
-                      <span>{plan.storage}</span>
-                    </div>
-                    <div className="flex items-center text-gray-300">
-                      <Check className="w-5 h-5 text-purple-400 mr-3" />
-                      <span>{plan.location}</span>
-                    </div>
-                    <div className="flex items-center text-gray-300">
-                      <Gem className="w-5 h-5 text-purple-400 mr-3" />
-                      <span>Premium Support</span>
-                    </div>
-                  </div>
-
-                  <button className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white py-3 rounded-lg font-semibold transition-all duration-300 group-hover:shadow-lg">
-                    Select Plan
-                  </button>
+            {/* Budget Plans Section */}
+            <div ref={budgetRef} className="mb-20">
+              <div className="text-center mb-12">
+                <div className="inline-flex items-center space-x-3 bg-gradient-to-r from-green-500 to-emerald-500 text-white px-8 py-4 rounded-2xl mb-6">
+                  <Gamepad2 className="w-6 h-6" />
+                  <span className="text-2xl font-bold">Budget Plans</span>
                 </div>
-              ))}
+                <p className="text-gray-300 text-lg">Perfect for small communities and personal servers</p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {budgetPlans.map((plan, index) => (
+                  <div
+                    key={index}
+                    className="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20 hover:border-green-500/50 transition-all duration-300 transform hover:scale-105 cursor-pointer group"
+                    onClick={() => handlePlanSelect(plan)}
+                  >
+                    <div className="text-center mb-6">
+                      <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl flex items-center justify-center mx-auto mb-4">
+                        <Gamepad2 className="w-8 h-8 text-white" />
+                      </div>
+                      <h3 className="text-2xl font-bold text-white mb-2">{plan.name}</h3>
+                      <div className="text-3xl font-bold text-green-400 mb-2">{plan.price}<span className="text-lg text-gray-400">/mo</span></div>
+                    </div>
+
+                    <div className="space-y-3 mb-6">
+                      <div className="flex items-center text-gray-300">
+                        <Check className="w-5 h-5 text-green-400 mr-3" />
+                        <span>{plan.ram}</span>
+                      </div>
+                      <div className="flex items-center text-gray-300">
+                        <Check className="w-5 h-5 text-green-400 mr-3" />
+                        <span>{plan.cpu}</span>
+                      </div>
+                      <div className="flex items-center text-gray-300">
+                        <Check className="w-5 h-5 text-green-400 mr-3" />
+                        <span>{plan.storage}</span>
+                      </div>
+                      <div className="flex items-center text-gray-300">
+                        <Check className="w-5 h-5 text-green-400 mr-3" />
+                        <span>{plan.location}</span>
+                      </div>
+                    </div>
+
+                    <button className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white py-3 rounded-lg font-semibold transition-all duration-300 group-hover:shadow-lg">
+                      Select Plan
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Powered Plans Section */}
+            <div ref={poweredRef} className="mb-20">
+              <div className="text-center mb-12">
+                <div className="inline-flex items-center space-x-3 bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-8 py-4 rounded-2xl mb-6">
+                  <Zap className="w-6 h-6" />
+                  <span className="text-2xl font-bold">Powered Plans</span>
+                </div>
+                <p className="text-gray-300 text-lg">Enhanced performance for growing communities</p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {poweredPlans.map((plan, index) => (
+                  <div
+                    key={index}
+                    className="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20 hover:border-blue-500/50 transition-all duration-300 transform hover:scale-105 cursor-pointer group"
+                    onClick={() => handlePlanSelect(plan)}
+                  >
+                    <div className="text-center mb-6">
+                      <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center mx-auto mb-4">
+                        <Zap className="w-8 h-8 text-white" />
+                      </div>
+                      <h3 className="text-2xl font-bold text-white mb-2">{plan.name}</h3>
+                      <div className="text-3xl font-bold text-blue-400 mb-2">{plan.price}<span className="text-lg text-gray-400">/mo</span></div>
+                    </div>
+
+                    <div className="space-y-3 mb-6">
+                      <div className="flex items-center text-gray-300">
+                        <Check className="w-5 h-5 text-blue-400 mr-3" />
+                        <span>{plan.ram}</span>
+                      </div>
+                      <div className="flex items-center text-gray-300">
+                        <Check className="w-5 h-5 text-blue-400 mr-3" />
+                        <span>{plan.cpu}</span>
+                      </div>
+                      <div className="flex items-center text-gray-300">
+                        <Check className="w-5 h-5 text-blue-400 mr-3" />
+                        <span>{plan.storage}</span>
+                      </div>
+                      <div className="flex items-center text-gray-300">
+                        <Check className="w-5 h-5 text-blue-400 mr-3" />
+                        <span>{plan.location}</span>
+                      </div>
+                    </div>
+
+                    <button className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white py-3 rounded-lg font-semibold transition-all duration-300 group-hover:shadow-lg">
+                      Select Plan
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Premium Plans Section */}
+            <div ref={premiumRef} className="mb-20">
+              <div className="text-center mb-12">
+                <div className="inline-flex items-center space-x-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-8 py-4 rounded-2xl mb-6">
+                  <Crown className="w-6 h-6" />
+                  <span className="text-2xl font-bold">Premium Plans</span>
+                </div>
+                <p className="text-gray-300 text-lg">Ultimate performance for professional servers</p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {premiumPlans.map((plan, index) => (
+                  <div
+                    key={index}
+                    className="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20 hover:border-purple-500/50 transition-all duration-300 transform hover:scale-105 cursor-pointer group relative"
+                    onClick={() => handlePlanSelect(plan)}
+                  >
+                    {plan.name === 'Diamond' && (
+                      <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-yellow-500 to-orange-500 text-white text-xs px-3 py-1 rounded-full">
+                        ⭐ Popular
+                      </div>
+                    )}
+                    <div className="text-center mb-6">
+                      <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center mx-auto mb-4">
+                        <Crown className="w-8 h-8 text-white" />
+                      </div>
+                      <h3 className="text-2xl font-bold text-white mb-2">{plan.name}</h3>
+                      <div className="text-3xl font-bold text-purple-400 mb-2">{plan.price}<span className="text-lg text-gray-400">/mo</span></div>
+                    </div>
+
+                    <div className="space-y-3 mb-6">
+                      <div className="flex items-center text-gray-300">
+                        <Check className="w-5 h-5 text-purple-400 mr-3" />
+                        <span>{plan.ram}</span>
+                      </div>
+                      <div className="flex items-center text-gray-300">
+                        <Check className="w-5 h-5 text-purple-400 mr-3" />
+                        <span>{plan.cpu}</span>
+                      </div>
+                      <div className="flex items-center text-gray-300">
+                        <Check className="w-5 h-5 text-purple-400 mr-3" />
+                        <span>{plan.storage}</span>
+                      </div>
+                      <div className="flex items-center text-gray-300">
+                        <Check className="w-5 h-5 text-purple-400 mr-3" />
+                        <span>{plan.location}</span>
+                      </div>
+                      <div className="flex items-center text-gray-300">
+                        <Gem className="w-5 h-5 text-purple-400 mr-3" />
+                        <span>Premium Support</span>
+                      </div>
+                    </div>
+
+                    <button className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white py-3 rounded-lg font-semibold transition-all duration-300 group-hover:shadow-lg">
+                      Select Plan
+                    </button>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </section>
