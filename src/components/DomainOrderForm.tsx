@@ -1,25 +1,22 @@
 import React, { useState } from 'react';
-import { ArrowLeft, User, Mail, Phone, MapPin, MessageCircle, Send, CheckCircle, Gamepad2 } from 'lucide-react';
+import { ArrowLeft, User, Mail, MessageCircle, Send, CheckCircle, Globe, MapPin } from 'lucide-react';
 
-interface PaymentFormProps {
-  selectedPlan: any;
-  selectedAddons: any;
+interface DomainOrderFormProps {
+  selectedDomain: any;
   onBack: () => void;
   theme: string;
 }
 
-const PaymentForm: React.FC<PaymentFormProps> = ({ selectedPlan, selectedAddons, onBack, theme }) => {
+const DomainOrderForm: React.FC<DomainOrderFormProps> = ({ selectedDomain, onBack, theme }) => {
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
     email: '',
-    phone: '',
+    discordUsername: '',
     address: '',
     city: '',
     state: '',
     pincode: '',
-    discordUsername: '',
-    serverName: '',
     additionalNotes: ''
   });
 
@@ -34,25 +31,18 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ selectedPlan, selectedAddons,
     }));
   };
 
-  const calculateTotal = () => {
-    const basePrice = parseInt(selectedPlan.price.replace('₹', ''));
-    const unitsPrice = (selectedAddons?.units || 0) * parseInt(selectedPlan.addons.unit.replace('₹', ''));
-    const backupsPrice = (selectedAddons?.backups || 0) * parseInt(selectedPlan.addons.backup.replace('₹', ''));
-    return basePrice + unitsPrice + backupsPrice;
-  };
-
   const sendToDiscord = async () => {
     const webhookUrl = 'https://discord.com/api/webhooks/1390708963229831180/iIcQEkMPv1_bWKzvg58UWBq-c84msuMit4Sh6aw5xa4HaCYyUgdl3fA82W8g2vZLofsp';
 
     const orderDetails = {
       embeds: [
         {
-          title: "🎮 New Minecraft Hosting Order!",
+          title: "🌐 New Domain Registration Order!",
           color: 0x7C3AED,
           fields: [
             {
               name: "👤 Customer Information",
-              value: `**Name:** ${formData.firstName} ${formData.lastName}\n**Email:** ${formData.email}\n**Phone:** ${formData.phone}\n**Discord:** ${formData.discordUsername}`,
+              value: `**Name:** ${formData.firstName} ${formData.lastName}\n**Email:** ${formData.email}\n**Discord:** ${formData.discordUsername}`,
               inline: false
             },
             {
@@ -61,29 +51,19 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ selectedPlan, selectedAddons,
               inline: false
             },
             {
-              name: "🎯 Plan Details",
-              value: `**Plan:** ${selectedPlan.name} Plan\n**Type:** ${selectedPlan.planType}\n**RAM:** ${selectedPlan.ram}\n**CPU:** ${selectedPlan.cpu}\n**Storage:** ${selectedPlan.storage}\n**Location:** ${selectedPlan.location}`,
-              inline: true
+              name: "🌐 Domain Details",
+              value: `**Domain:** ${selectedDomain.domain}${selectedDomain.tld}\n**Extension:** ${selectedDomain.tld}\n**Price:** ${selectedDomain.price}/year`,
+              inline: false
             },
             {
-              name: "🔧 Add-ons",
-              value: `**Extra Units:** ${selectedAddons?.units || 0}\n**Backup Slots:** ${selectedAddons?.backups || 0}`,
-              inline: true
-            },
-            {
-              name: "💰 Pricing",
-              value: `**Base Price:** ₹${selectedPlan.price.replace('₹', '')}\n**Add-ons:** ₹${((selectedAddons?.units || 0) * parseInt(selectedPlan.addons.unit.replace('₹', ''))) + ((selectedAddons?.backups || 0) * parseInt(selectedPlan.addons.backup.replace('₹', '')))}\n**Total:** ₹${calculateTotal()}`,
-              inline: true
-            },
-            {
-              name: "🎮 Server Details",
-              value: `**Server Name:** ${formData.serverName || 'Not specified'}\n**Additional Notes:** ${formData.additionalNotes || 'None'}`,
+              name: "📝 Additional Notes",
+              value: formData.additionalNotes || 'None',
               inline: false
             }
           ],
           timestamp: new Date().toISOString(),
           footer: {
-            text: "CraftDomains Minecraft Hosting"
+            text: "CraftDomains Domain Registration"
           }
         }
       ]
@@ -124,15 +104,15 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ selectedPlan, selectedAddons,
           <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-6">
             <CheckCircle className="w-8 h-8 text-white" />
           </div>
-          <h2 className="text-2xl font-bold text-white mb-4">Order Submitted Successfully!</h2>
+          <h2 className="text-2xl font-bold text-white mb-4">Domain Order Submitted!</h2>
           <p className="text-gray-300 mb-6">
-            Your Minecraft hosting order has been received. Our team will contact you on Discord within 24 hours to set up your server.
+            Your domain registration request has been received. Our team will contact you on Discord within 24 hours to complete the registration process.
           </p>
           <button
             onClick={onBack}
             className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white py-3 rounded-lg font-semibold transition-all duration-300"
           >
-            Back to Plans
+            Back to Home
           </button>
         </div>
       </div>
@@ -148,79 +128,72 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ selectedPlan, selectedAddons,
             className="flex items-center text-purple-400 hover:text-purple-300 transition-colors"
           >
             <ArrowLeft className="w-5 h-5 mr-2" />
-            Back to Plans
+            Back to Domain Search
           </button>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Order Summary */}
+          {/* Domain Summary */}
           <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 h-fit">
-            <h2 className="text-2xl font-bold text-white mb-6">Order Summary</h2>
+            <h2 className="text-2xl font-bold text-white mb-6">Domain Summary</h2>
             
             <div className="space-y-4 mb-6">
               <div className="flex items-center space-x-4 p-4 bg-white/5 rounded-xl">
                 <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
-                  <Gamepad2 className="w-6 h-6 text-white" />
+                  <Globe className="w-6 h-6 text-white" />
                 </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-white">{selectedPlan.name} Plan</h3>
-                  <p className="text-gray-400">{selectedPlan.planType}</p>
+                <div className="flex-1">
+                  <h3 className="text-lg font-semibold text-white">{selectedDomain.domain}{selectedDomain.tld}</h3>
+                  <p className="text-gray-400">Domain Registration</p>
                 </div>
-                <div className="ml-auto text-right">
-                  <div className="text-xl font-bold text-white">{selectedPlan.price}</div>
-                  <div className="text-sm text-gray-400">/month</div>
-                </div>
-              </div>
-
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between text-gray-300">
-                  <span>RAM:</span>
-                  <span>{selectedPlan.ram}</span>
-                </div>
-                <div className="flex justify-between text-gray-300">
-                  <span>CPU:</span>
-                  <span>{selectedPlan.cpu}</span>
-                </div>
-                <div className="flex justify-between text-gray-300">
-                  <span>Storage:</span>
-                  <span>{selectedPlan.storage}</span>
-                </div>
-                <div className="flex justify-between text-gray-300">
-                  <span>Location:</span>
-                  <span>{selectedPlan.location}</span>
+                <div className="text-right">
+                  <div className="text-xl font-bold text-white">{selectedDomain.price}</div>
+                  <div className="text-sm text-gray-400">/year</div>
                 </div>
               </div>
             </div>
 
-            {(selectedAddons?.units > 0 || selectedAddons?.backups > 0) && (
-              <div className="border-t border-white/20 pt-4 mb-6">
-                <h4 className="text-lg font-semibold text-white mb-3">Add-ons</h4>
-                {selectedAddons?.units > 0 && (
-                  <div className="flex justify-between text-gray-300 mb-2">
-                    <span>Extra Units ({selectedAddons.units})</span>
-                    <span>₹{selectedAddons.units * parseInt(selectedPlan.addons.unit.replace('₹', ''))}</span>
-                  </div>
-                )}
-                {selectedAddons?.backups > 0 && (
-                  <div className="flex justify-between text-gray-300">
-                    <span>Backup Slots ({selectedAddons.backups})</span>
-                    <span>₹{selectedAddons.backups * parseInt(selectedPlan.addons.backup.replace('₹', ''))}</span>
-                  </div>
-                )}
+            <div className="space-y-3 text-sm mb-6">
+              <div className="flex justify-between text-gray-300">
+                <span>Domain:</span>
+                <span className="font-semibold">{selectedDomain.domain}{selectedDomain.tld}</span>
               </div>
-            )}
+              <div className="flex justify-between text-gray-300">
+                <span>Extension:</span>
+                <span>{selectedDomain.tld}</span>
+              </div>
+              <div className="flex justify-between text-gray-300">
+                <span>Registration Period:</span>
+                <span>1 Year</span>
+              </div>
+              <div className="flex justify-between text-gray-300">
+                <span>Auto-Renewal:</span>
+                <span>Enabled</span>
+              </div>
+            </div>
 
             <div className="border-t border-white/20 pt-4">
               <div className="flex justify-between items-center">
                 <span className="text-xl font-bold text-white">Total</span>
-                <span className="text-2xl font-bold text-purple-400">₹{calculateTotal()}/mo</span>
+                <span className="text-2xl font-bold text-purple-400">{selectedDomain.price}/year</span>
               </div>
+            </div>
+
+            <div className="mt-6 p-4 bg-blue-500/20 rounded-xl border border-blue-500/30">
+              <h4 className="text-blue-300 font-semibold mb-2">What's Included:</h4>
+              <ul className="text-sm text-blue-200 space-y-1">
+                <li>• Free DNS Management</li>
+                <li>• Domain Privacy Protection</li>
+                <li>• 24/7 Support</li>
+                <li>• Easy Domain Transfer</li>
+                <li>• Free Email Forwarding</li>
+              </ul>
             </div>
           </div>
 
-          {/* Order Form */}
+          {/* Registration Form */}
           <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
-            <h2 className="text-2xl font-bold text-white mb-6">Customer Information</h2>
+            <h2 className="text-2xl font-bold text-white mb-6">Registration Information</h2>
             
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -269,22 +242,6 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ selectedPlan, selectedAddons,
                   required
                   className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
                   placeholder="Enter email address"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  <Phone className="w-4 h-4 inline mr-2" />
-                  Phone Number *
-                </label>
-                <input
-                  type="tel"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleInputChange}
-                  required
-                  className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                  placeholder="Enter phone number"
                 />
               </div>
 
@@ -360,21 +317,6 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ selectedPlan, selectedAddons,
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  <Gamepad2 className="w-4 h-4 inline mr-2" />
-                  Server Name (Optional)
-                </label>
-                <input
-                  type="text"
-                  name="serverName"
-                  value={formData.serverName}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                  placeholder="Enter desired server name"
-                />
-              </div>
-
-              <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">Additional Notes</label>
                 <textarea
                   name="additionalNotes"
@@ -386,6 +328,13 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ selectedPlan, selectedAddons,
                 />
               </div>
 
+              <div className="p-4 bg-yellow-500/20 rounded-xl border border-yellow-500/30">
+                <p className="text-yellow-200 text-sm">
+                  <strong>Note:</strong> Domain registration requires verification of contact information. 
+                  Please ensure all details are accurate to avoid delays in the registration process.
+                </p>
+              </div>
+
               <button
                 type="submit"
                 disabled={isSubmitting}
@@ -394,12 +343,12 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ selectedPlan, selectedAddons,
                 {isSubmitting ? (
                   <div className="flex items-center">
                     <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3"></div>
-                    Processing Order...
+                    Processing Registration...
                   </div>
                 ) : (
                   <div className="flex items-center">
                     <Send className="w-5 h-5 mr-2" />
-                    Submit Order
+                    Register Domain
                   </div>
                 )}
               </button>
@@ -411,4 +360,4 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ selectedPlan, selectedAddons,
   );
 };
 
-export default PaymentForm;
+export default DomainOrderForm;
