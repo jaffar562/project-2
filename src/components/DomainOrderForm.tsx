@@ -14,10 +14,8 @@ const DomainOrderForm: React.FC<DomainOrderFormProps> = ({ selectedDomain, onBac
     email: '',
     discordUsername: '',
     address: '',
-    city: '',
     state: '',
-    pincode: '',
-    additionalNotes: ''
+    country: ''
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -47,17 +45,12 @@ const DomainOrderForm: React.FC<DomainOrderFormProps> = ({ selectedDomain, onBac
             },
             {
               name: "📍 Address",
-              value: `${formData.address}\n${formData.city}, ${formData.state} - ${formData.pincode}`,
+              value: `${formData.address}\n${formData.state}, ${formData.country}`,
               inline: false
             },
             {
               name: "🌐 Domain Details",
               value: `**Domain:** ${selectedDomain.domain}${selectedDomain.tld}\n**Extension:** ${selectedDomain.tld}\n**Price:** ${selectedDomain.price}/year`,
-              inline: false
-            },
-            {
-              name: "📝 Additional Notes",
-              value: formData.additionalNotes || 'None',
               inline: false
             }
           ],
@@ -277,19 +270,7 @@ const DomainOrderForm: React.FC<DomainOrderFormProps> = ({ selectedDomain, onBac
                 />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">City *</label>
-                  <input
-                    type="text"
-                    name="city"
-                    value={formData.city}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                    placeholder="City"
-                  />
-                </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-300 mb-2">State *</label>
                   <input
@@ -299,33 +280,21 @@ const DomainOrderForm: React.FC<DomainOrderFormProps> = ({ selectedDomain, onBac
                     onChange={handleInputChange}
                     required
                     className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                    placeholder="State"
+                    placeholder="Enter state"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">PIN Code *</label>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">Country *</label>
                   <input
                     type="text"
-                    name="pincode"
-                    value={formData.pincode}
+                    name="country"
+                    value={formData.country}
                     onChange={handleInputChange}
                     required
                     className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                    placeholder="PIN Code"
+                    placeholder="Enter country"
                   />
                 </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Additional Notes</label>
-                <textarea
-                  name="additionalNotes"
-                  value={formData.additionalNotes}
-                  onChange={handleInputChange}
-                  rows={3}
-                  className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                  placeholder="Any special requirements or notes..."
-                />
               </div>
 
               <div className="p-4 bg-yellow-500/20 rounded-xl border border-yellow-500/30">
