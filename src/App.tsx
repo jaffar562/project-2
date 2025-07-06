@@ -35,6 +35,8 @@ import MinecraftHero from './components/MinecraftHero';
 import PlanTabs from './components/PlanTabs';
 import DomainPage from './components/DomainPage';
 import HostingPage from './components/HostingPage';
+import VPSPage from './components/VPSPage';
+import VPSOrderForm from './components/VPSOrderForm';
 
 function App() {
   const [currentView, setCurrentView] = useState('home');
@@ -69,7 +71,11 @@ function App() {
   const handlePlanSelect = (plan) => {
     setSelectedPlan(plan);
     setSelectedAddons({ units: 0, backups: 0 });
-    setCurrentView('checkout');
+    if (currentView === 'hosting') {
+      setCurrentView('checkout');
+    } else if (currentView === 'vps') {
+      setCurrentView('vps-checkout');
+    }
   };
 
   const handleDomainSearch = () => {
@@ -167,6 +173,14 @@ function App() {
     />;
   }
 
+  if (currentView === 'vps-checkout') {
+    return <VPSOrderForm 
+      selectedPlan={selectedPlan} 
+      onBack={() => setCurrentView('vps')} 
+      theme={theme}
+    />;
+  }
+
   if (currentView === 'domain-checkout') {
     return <DomainOrderForm 
       selectedDomain={selectedDomain} 
@@ -185,6 +199,14 @@ function App() {
 
   if (currentView === 'hosting') {
     return <HostingPage 
+      theme={theme}
+      onBack={() => setCurrentView('home')}
+      onPlanSelect={handlePlanSelect}
+    />;
+  }
+
+  if (currentView === 'vps') {
+    return <VPSPage 
       theme={theme}
       onBack={() => setCurrentView('home')}
       onPlanSelect={handlePlanSelect}
@@ -230,6 +252,12 @@ function App() {
                 className={`${currentView === 'hosting' ? 'text-purple-400' : themeStyles.textSecondary} hover:text-purple-400 transition-colors font-medium`}
               >
                 Hosting
+              </button>
+              <button 
+                onClick={() => setCurrentView('vps')}
+                className={`${currentView === 'vps' ? 'text-purple-400' : themeStyles.textSecondary} hover:text-purple-400 transition-colors font-medium`}
+              >
+                VPS
               </button>
               <a 
                 href="https://discord.gg/Qy6tuNJmwJ" 
@@ -291,6 +319,15 @@ function App() {
                 >
                   Hosting
                 </button>
+                <button 
+                  onClick={() => {
+                    setCurrentView('vps');
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className={`${currentView === 'vps' ? 'text-purple-400' : themeStyles.textSecondary} hover:text-purple-400 transition-colors font-medium text-left`}
+                >
+                  VPS
+                </button>
                 <a 
                   href="https://discord.gg/Qy6tuNJmwJ" 
                   target="_blank" 
@@ -330,8 +367,7 @@ function App() {
           </h1>
           
           <p className={`text-base sm:text-xl md:text-2xl ${themeStyles.textSecondary} mb-8 sm:mb-12 max-w-4xl mx-auto leading-relaxed px-4`}>
-            Premium domain registration and blazing-fast Minecraft hosting designed specifically for Indian gamers. 
-            Choose your path to digital excellence.
+            Premium domain registration, blazing-fast Minecraft hosting, and enterprise VPS solutions designed specifically for Indian users.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center px-4">
@@ -358,7 +394,7 @@ function App() {
       {/* Service Cards */}
       <section className="py-12 sm:py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
             {/* Domain Registration Card */}
             <div className={`${themeStyles.card} p-6 sm:p-8 rounded-3xl group hover:scale-105 transition-all duration-500 border hover:border-pink-500/30 relative overflow-hidden`}>
               <div className="absolute inset-0 bg-gradient-to-br from-pink-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
@@ -424,6 +460,41 @@ function App() {
                   className={`w-full sm:w-auto ${themeStyles.button} ${themeStyles.glowButton} text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 flex items-center justify-center group text-sm sm:text-base`}
                 >
                   Choose Plan
+                  <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                </button>
+              </div>
+            </div>
+
+            {/* VPS Hosting Card */}
+            <div className={`${themeStyles.card} p-6 sm:p-8 rounded-3xl group hover:scale-105 transition-all duration-500 border hover:border-orange-500/30 relative overflow-hidden`}>
+              <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-yellow-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div className="relative z-10">
+                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-2xl flex items-center justify-center mb-4 sm:mb-6 shadow-lg shadow-orange-500/25 animate-pulse">
+                  <Server className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
+                </div>
+                <h3 className={`text-2xl sm:text-3xl font-bold ${themeStyles.text} mb-3 sm:mb-4`}>VPS Hosting</h3>
+                <p className={`${themeStyles.textSecondary} text-base sm:text-lg mb-4 sm:mb-6 leading-relaxed`}>
+                  Enterprise-grade VPS with V4 processors, NVMe SSD storage, and instant deployment starting from ₹270/month.
+                </p>
+                <ul className="space-y-2 sm:space-y-3 mb-6 sm:mb-8">
+                  <li className={`flex items-center ${themeStyles.textSecondary} text-sm sm:text-base`}>
+                    <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 mr-2 sm:mr-3 text-green-400" />
+                    <span>V4 Processors</span>
+                  </li>
+                  <li className={`flex items-center ${themeStyles.textSecondary} text-sm sm:text-base`}>
+                    <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 mr-2 sm:mr-3 text-green-400" />
+                    <span>NVMe SSD Storage</span>
+                  </li>
+                  <li className={`flex items-center ${themeStyles.textSecondary} text-sm sm:text-base`}>
+                    <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 mr-2 sm:mr-3 text-green-400" />
+                    <span>Instant Deployment</span>
+                  </li>
+                </ul>
+                <button 
+                  onClick={() => setCurrentView('vps')}
+                  className={`w-full sm:w-auto bg-gradient-to-r from-orange-500 to-yellow-500 hover:from-orange-600 hover:to-yellow-600 shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 flex items-center justify-center group text-sm sm:text-base`}
+                >
+                  Launch VPS
                   <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2 group-hover:translate-x-1 transition-transform" />
                 </button>
               </div>
@@ -593,8 +664,8 @@ function App() {
               <h4 className={`font-semibold ${themeStyles.text} mb-3 sm:mb-4 text-sm sm:text-base`}>Services</h4>
               <ul className={`space-y-1 sm:space-y-2 text-xs sm:text-sm ${themeStyles.textSecondary}`}>
                 <li className="hover:text-purple-400 transition-colors cursor-pointer">Minecraft Hosting</li>
+                <li className="hover:text-purple-400 transition-colors cursor-pointer">VPS Hosting</li>
                 <li className="hover:text-purple-400 transition-colors cursor-pointer">Domain Registration</li>
-                <li className="hover:text-purple-400 transition-colors cursor-pointer">DDoS Protection</li>
                 <li className="hover:text-purple-400 transition-colors cursor-pointer">24/7 Support</li>
               </ul>
             </div>
