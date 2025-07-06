@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, User, Mail, MessageCircle, Send, CheckCircle, Server, ExternalLink, Cpu, HardDrive, Wifi, Database, Zap } from 'lucide-react';
+import { ArrowLeft, User, Mail, MessageCircle, Send, CheckCircle, Server, ExternalLink, Cpu, HardDrive, Wifi, Database, Zap, Copy } from 'lucide-react';
 
 interface VPSOrderFormProps {
   selectedPlan: any;
@@ -18,6 +18,21 @@ const VPSOrderForm: React.FC<VPSOrderFormProps> = ({ selectedPlan, onBack, theme
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [orderId, setOrderId] = useState('');
+  const [copied, setCopied] = useState(false);
+
+  const generateOrderId = () => {
+    const prefix = 'VPS';
+    const timestamp = Date.now().toString().slice(-6);
+    const random = Math.random().toString(36).substring(2, 6).toUpperCase();
+    return `${prefix}${timestamp}${random}`;
+  };
+
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -72,7 +87,7 @@ const VPSOrderForm: React.FC<VPSOrderFormProps> = ({ selectedPlan, onBack, theme
     }
   };
 
-  const sendToDiscord = async () => {
+  const sendToDiscord = async (generatedOrderId: string) => {
     const webhookUrl = 'https://discord.com/api/webhooks/1390708963229831180/iIcQEkMPv1_bWKzvg58UWBq-c84msuMit4Sh6aw5xa4HaCYyUgdl3fA82W8g2vZLofsp';
 
     const orderDetails = {
@@ -81,6 +96,11 @@ const VPSOrderForm: React.FC<VPSOrderFormProps> = ({ selectedPlan, onBack, theme
           title: "🖥️ New VPS Hosting Order!",
           color: 0x7C3AED,
           fields: [
+            {
+              name: "🆔 Order ID",
+              value: `**${generatedOrderId}**`,
+              inline: false
+            },
             {
               name: "👤 Customer Information",
               value: `**Name:** ${formData.firstName} ${formData.lastName}\n**Email:** ${formData.email}\n**Discord:** ${formData.discordUsername}`,
@@ -133,8 +153,10 @@ const VPSOrderForm: React.FC<VPSOrderFormProps> = ({ selectedPlan, onBack, theme
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    const generatedOrderId = generateOrderId();
+    setOrderId(generatedOrderId);
     await new Promise(resolve => setTimeout(resolve, 2000));
-    await sendToDiscord();
+    await sendToDiscord(generatedOrderId);
     setIsSubmitting(false);
   };
 
@@ -146,8 +168,27 @@ const VPSOrderForm: React.FC<VPSOrderFormProps> = ({ selectedPlan, onBack, theme
             <CheckCircle className="w-8 h-8 text-white" />
           </div>
           <h2 className={`text-xl sm:text-2xl font-bold ${themeStyles.text} mb-4`}>VPS Order Submitted!</h2>
+          
+          {/* Order ID Display */}
+          <div className={`${themeStyles.card} p-4 rounded-xl mb-6 border`}>
+            <p className={`text-sm ${themeStyles.textSecondary} mb-2`}>Your Order ID:</p>
+            <div className="flex items-center justify-center space-x-2">
+              <span className={`text-lg font-bold ${themeStyles.text} font-mono`}>#{orderId}</span>
+              <button
+                onClick={() => copyToClipboard(`#${orderId}`)}
+                className={`p-2 ${themeStyles.button} text-white rounded-lg transition-all duration-300 hover:scale-105`}
+                title="Copy Order ID"
+              >
+                <Copy className="w-4 h-4" />
+              </button>
+            </div>
+            {copied && (
+              <p className="text-green-400 text-xs mt-2">Copied to clipboard!</p>
+            )}
+          </div>
+
           <p className={`${themeStyles.textSecondary} mb-6 text-sm sm:text-base`}>
-            Your VPS hosting order has been received. Our team will contact you on Discord to confirm your order and set up your server.
+            Your VPS hosting order has been received. Create a ticket on Discord with this ID <strong>#{orderId}</strong> and our team will contact you to confirm your order and set up your server.
           </p>
           
           <div className="mb-6">
@@ -162,7 +203,7 @@ const VPSOrderForm: React.FC<VPSOrderFormProps> = ({ selectedPlan, onBack, theme
               <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4 ml-2" />
             </a>
             <p className={`text-xs sm:text-sm ${themeStyles.textSecondary}`}>
-              Join our Discord server to confirm your order and get support from our team.
+              Join our Discord server and create a ticket with your order ID to get support from our team.
             </p>
           </div>
 
