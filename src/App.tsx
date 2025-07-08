@@ -37,6 +37,7 @@ import DomainPage from './components/DomainPage';
 import HostingPage from './components/HostingPage';
 import VPSPage from './components/VPSPage';
 import VPSOrderForm from './components/VPSOrderForm';
+import AdminApp from './components/AdminApp';
 
 function App() {
   const [currentView, setCurrentView] = useState('home');
@@ -48,6 +49,7 @@ function App() {
   const [theme, setTheme] = useState('dark');
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [showAdmin, setShowAdmin] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -136,6 +138,28 @@ function App() {
         };
     }
   };
+
+  // Check for admin access via URL parameter or keyboard shortcut
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('admin') === 'true') {
+      setShowAdmin(true);
+    }
+
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+        setShowAdmin(true);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, []);
+
+  // Show admin panel if requested
+  if (showAdmin) {
+    return <AdminApp theme={theme} />;
+  }
 
   const themeStyles = getThemeClasses();
 
