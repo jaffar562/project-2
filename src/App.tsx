@@ -28,6 +28,7 @@ import {
   Menu,
   X
 } from 'lucide-react';
+import { Toaster } from 'react-hot-toast';
 import PaymentForm from './components/PaymentForm';
 import DomainOrderForm from './components/DomainOrderForm';
 import DomainTLDList from './components/DomainTLDList';
@@ -238,7 +239,20 @@ function App() {
   }
 
   return (
-    <div className={`min-h-screen ${themeStyles.bg} font-['Inter',sans-serif]`}>
+    <>
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          duration: 4000,
+          style: {
+            background: theme === 'light' ? '#ffffff' : '#1f2937',
+            color: theme === 'light' ? '#1f2937' : '#ffffff',
+            border: theme === 'light' ? '1px solid #e5e7eb' : '1px solid #374151',
+          },
+        }}
+      />
+      
+      <div className={`min-h-screen ${themeStyles.bg} font-['Inter',sans-serif]`}>
       {/* Header */}
       <header className={`${isScrolled ? themeStyles.card : 'bg-transparent'} border-b border-white/10 sticky top-0 z-50 transition-all duration-300`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -728,7 +742,8 @@ function App() {
           </div>
         </div>
       </footer>
-    </div>
+      </div>
+    </>
   );
 }
 

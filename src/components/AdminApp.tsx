@@ -12,11 +12,15 @@ const AdminApp: React.FC<AdminAppProps> = ({ theme = 'dark' }) => {
 
   const handleLogin = async (credentials: { email: string; password: string }) => {
     // Demo authentication - replace with real authentication
-    if (credentials.email === 'admin@demonnode.com' && credentials.password === 'admin123') {
-      setIsAuthenticated(true);
-      return Promise.resolve();
-    } else {
-      return Promise.reject(new Error('Invalid credentials'));
+    try {
+      if (credentials.email === 'admin@demonnode.com' && credentials.password === 'admin123') {
+        setIsAuthenticated(true);
+        return Promise.resolve();
+      } else {
+        throw new Error('Invalid credentials');
+      }
+    } catch (error) {
+      throw error;
     }
   };
 
